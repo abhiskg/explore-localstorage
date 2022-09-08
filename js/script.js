@@ -41,3 +41,57 @@
 //     });
 //   };
 //   showStorageData();
+const addTodoBtn = document.querySelector("#add-todo-btn");
+addTodoBtn.addEventListener("click", () => {
+    const todoText = document.querySelector("#todo-text");
+    const textValue = todoText.value;
+    todoText.value = "";
+    const todos = localStorage.getItem("TODOS");
+    if (!todos) {
+        const todoList = [
+            {
+                title: textValue,
+                completed: false,
+            },
+        ];
+        localStorage.setItem("TODOS", JSON.stringify(todoList));
+    }
+    else {
+        const previousTodos = JSON.parse(todos);
+        const todoList = [
+            ...previousTodos,
+            {
+                title: textValue,
+                completed: false,
+            },
+        ];
+        localStorage.setItem("TODOS", JSON.stringify(todoList));
+    }
+    showTitle();
+});
+const showTitle = () => {
+    const todoList = document.querySelector("#todo-list");
+    todoList.textContent = "";
+    const alltodosInString = localStorage.getItem("TODOS");
+    if (!alltodosInString) {
+        return;
+    }
+    const allTodos = JSON.parse(alltodosInString);
+    allTodos.forEach((todos) => {
+        const li = document.createElement("li");
+        li.classList.add("py-1.5", "flex", "justify-between", "items-center");
+        li.innerHTML = `
+    <p>${todos.title}</p>
+    <i onclick="removeTitle(${todos.title})" class="fa-solid fa-square-minus text-[30px] text-red-400"></i>
+    `;
+        todoList.append(li);
+    });
+};
+showTitle();
+const removeTitle = (title) => {
+    localStorage.removeItem(title);
+};
+const handleClear = () => {
+    localStorage.clear();
+    showTitle();
+};

@@ -42,3 +42,67 @@
 //     });
 //   };
 //   showStorageData();
+
+const addTodoBtn = document.querySelector("#add-todo-btn") as HTMLButtonElement;
+addTodoBtn.addEventListener("click", () => {
+  const todoText = document.querySelector("#todo-text") as HTMLInputElement;
+  const textValue = todoText.value;
+  todoText.value = "";
+
+  const todos = localStorage.getItem("TODOS");
+
+  if (!todos) {
+    const todoList = [
+      {
+        title: textValue,
+        completed: false,
+      },
+    ];
+    localStorage.setItem("TODOS", JSON.stringify(todoList));
+  } else {
+    const previousTodos = JSON.parse(todos);
+    const todoList = [
+      ...previousTodos,
+      {
+        title: textValue,
+        completed: false,
+      },
+    ];
+    localStorage.setItem("TODOS", JSON.stringify(todoList));
+  }
+  showTitle();
+});
+
+interface Todos {
+  title: string;
+  completed: boolean;
+}
+
+const showTitle = () => {
+  const todoList = document.querySelector("#todo-list") as HTMLUListElement;
+  todoList.textContent = "";
+  const alltodosInString = localStorage.getItem("TODOS");
+  if (!alltodosInString) {
+    return;
+  }
+  const allTodos = JSON.parse(alltodosInString);
+  allTodos.forEach((todos: Todos) => {
+    const li = document.createElement("li");
+    li.classList.add("py-1.5", "flex", "justify-between", "items-center");
+    li.innerHTML = `
+    <p>${todos.title}</p>
+    <i onclick="removeTitle(${todos.title})" class="fa-solid fa-square-minus text-[30px] text-red-400"></i>
+    `;
+    todoList.append(li);
+  });
+};
+showTitle();
+
+const removeTitle = (title: string) => {
+  localStorage.removeItem(title);
+};
+
+const handleClear = () => {
+  localStorage.clear();
+  showTitle();
+};
