@@ -46,6 +46,10 @@ addTodoBtn.addEventListener("click", () => {
     const todoText = document.querySelector("#todo-text");
     const textValue = todoText.value;
     todoText.value = "";
+    if (textValue === "") {
+        alert("Please provide some title");
+        return;
+    }
     const todos = localStorage.getItem("TODOS");
     if (!todos) {
         const todoList = [
@@ -74,6 +78,7 @@ const showTitle = () => {
     todoList.textContent = "";
     const alltodosInString = localStorage.getItem("TODOS");
     if (!alltodosInString) {
+        todoList.textContent = "NO Data Found In LocalStorage";
         return;
     }
     const allTodos = JSON.parse(alltodosInString);
@@ -82,7 +87,7 @@ const showTitle = () => {
         li.classList.add("py-1.5", "flex", "justify-between", "items-center");
         li.innerHTML = `
     <p>${todos.title}</p>
-    <i onclick="removeTitle(${todos.title})" class="fa-solid fa-square-minus text-[30px] text-red-400"></i>
+    <button><i onclick="removeTitle(${todos.title})" class="fa-solid fa-square-minus text-[30px] text-red-400"></i></button>
     `;
         todoList.append(li);
     });
